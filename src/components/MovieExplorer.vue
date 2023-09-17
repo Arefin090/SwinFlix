@@ -35,14 +35,14 @@
           @input="searchMovies"
           type="text"
           placeholder="Search for movies"
-          class="w-full p-2 border border-rose-50 rounded-l"
+          class="w-full p-2 border border-rose-100 rounded-l"
         />
       </div>
       <div v-if="loading" class="text-center text-gray-800">
         <p>Loading movies...</p>
       </div>
       <div v-else>
-        <h2 class="text-3xl font-bold mb-4 text-rose-50">Genre</h2>
+        <h2 class="text-3xl font-bold mb-4 text-rose-300">Genre</h2>
         <div class="flex flex-wrap">
           <div 
             v-for="genre in genres" 
@@ -55,7 +55,7 @@
           </div>
         </div>
         <div v-if="genreMovies && genreMovies.length">
-          <h2 class="text-3xl font-bold mb-4 text-rose-50 mt-6">{{ selectedGenre }} Movies</h2>
+          <h2 class="text-3xl font-bold mb-4 text-rose-500 mt-6">{{ selectedGenre }} Movies</h2>
         <div ref="genreMovieGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4" v-if="genreMovies && genreMovies.length">
           <MovieBooking
             v-for="movie in genreMovies"
@@ -65,7 +65,7 @@
           />
           </div>
         </div>
-        <h2 class="text-3xl font-bold mb-4 text-ros-50 mt-6 text-rose-50">Latest Movies</h2>
+        <h2 class="text-3xl font-bold mb-4 text-ros-50 mt-6 text-rose-300">Latest Movies</h2>
         <div ref="latestMovieGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
           <MovieBooking
             v-for="movie in latestMovies"
@@ -75,7 +75,7 @@
             class="bg-white rounded shadow p-4"
           />
         </div>
-        <h2 class="text-3xl font-bold mb-4 text-rose-50 mt-6">Popular Movies</h2>
+        <h2 class="text-3xl font-bold mb-4 text-rose-300 mt-6">Popular Movies</h2>
         <div ref="popularMovieGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
           <MovieBooking
             v-for="movie in popularMovies"

@@ -1,13 +1,13 @@
 <template>
   <div class="relative min-h-screen bg-transparent select-none">
-    <video
+    <!-- <video
       class="fixed  w-auto min-w-full min-h-full max-w-none z-0 opacity-75"
       autoplay
       loop
       muted
     >
       <source :src="require('@/assets/avengers.mp4')" type="video/mp4" />
-    </video>
+    </video> -->
     <div class="container mx-auto p-4 z-50 relative">
       <div class="flex justify-between items-center">
         <h1 class="text-5xl text-center font-bold mb-4 text-rose-500">SwinFlix</h1>

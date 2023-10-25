@@ -1,16 +1,21 @@
 <template>
   <div id="app">
     <router-view/>
+    <FooterPage/>
   </div>
 </template>
 
 <script>
+import FooterPage from './components/FooterPage.vue';
+
 // import MovieExplorer from "./components/MovieExplorer.vue";
  //import UserLogin from "./components/UserLogin.vue";
 
 export default {
-  components: {
-},
+  components: 
+  {
+    FooterPage
+  },
 };
 </script>
 

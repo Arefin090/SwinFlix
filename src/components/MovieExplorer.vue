@@ -162,7 +162,7 @@ export default {
     async fetchMovies() {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/search/movie?api_key=69190bdb6ce23ca7e6133bfff3979ec4&query=${this.search}`
+          `https://api.themoviedb.org/3/search/movie?api_key=${process.env.VUE_APP_TMDB_API_KEY}&query=${this.search}`
         );
         this.latestMovies = response.data.results.slice(0, 8);
         this.popularMovies = null;
@@ -175,7 +175,7 @@ export default {
     async fetchLatestMovies() {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/movie/now_playing?api_key=69190bdb6ce23ca7e6133bfff3979ec4&language=en-US&page=1`
+          `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.VUE_APP_TMDB_API_KEY}&language=en-US&page=1`
         );
         this.latestMovies = response.data.results.slice(0, 8);
       } catch (error) {
@@ -186,7 +186,7 @@ export default {
     async fetchPopularMovies() {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/movie/popular?api_key=69190bdb6ce23ca7e6133bfff3979ec4&language=en-US&page=1`
+          `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.VUE_APP_TMDB_API_KEY}&language=en-US&page=1`
         );
         this.popularMovies = response.data.results.slice(0, 8);
       } catch (error) {
@@ -214,7 +214,7 @@ export default {
 
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/discover/movie?api_key=69190bdb6ce23ca7e6133bfff3979ec4&with_genres=${genreId}`
+          `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.VUE_APP_TMDB_API_KEY}&with_genres=${genreId}`
         );
         this.genreMovies = response.data.results.slice(0, 8);
       } catch (error) {

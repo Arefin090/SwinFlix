@@ -97,7 +97,6 @@ import "firebase/compat/firestore";
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { user } from '../main';
-import axios from 'axios';
 
 export default {
   props: {

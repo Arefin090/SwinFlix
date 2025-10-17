@@ -1,123 +1,220 @@
 <template>
-  <div class="min-h-screen select-none flex items-center justify-center bg-gradient-to-r from-blue-400 via-purple-500 to-red-600">
-    <video
-    class="fixed  w-auto min-w-full min-h-full max-w-none z-0 opacity-75"
-    autoplay
-    loop
-    muted
-  >
-    <source :src="require('@/assets/avengers.mp4')" type="video/mp4" />
-  </video>
-    <div class="bg-rose-50 p-16 rounded-lg shadow-2xl w-2/3 transform transition-all duration-500 ease-in-out hover:scale-105">
-      <h2 class="text-3xl text-center font-bold mb-10 text-gray-800 transition-all duration-500 ease-in-out transform translate-y-2 opacity-0 animate-fade-in-down">{{ formMode }}</h2>
-      <form @submit.prevent="processForm" class="space-y-6">
-        <input
-          type="text"
-          v-model="email"
-          placeholder="Email"
-          required
-          class="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:border-rose-500 transition-all duration-200 ease-in-out hover:border-rose-600"
-        />
-        <input
-          type="password"
-          v-model="password"
-          placeholder="Password"
-          required
-          class="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:border-rose-500 transition-all duration-200 ease-in-out hover:border-rose-600"
-        />
-        <button
-          type="submit"
-          class="w-full px-4 py-2 rounded-lg font-medium bg-rose-600 text-white transition-all duration-200 ease-in-out hover:bg-rose-700 focus:outline-none transform hover:scale-105"
+  <div class="min-h-screen bg-black flex items-center justify-center px-4">
+    <!-- Background with subtle gradient -->
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800"></div>
+    
+    <!-- Login Card -->
+    <div class="relative z-10 w-full max-w-md">
+      <!-- Logo -->
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent mb-2">
+          FinnFlix
+        </h1>
+        <p class="text-gray-400 text-sm">Your personal movie experience</p>
+      </div>
+
+      <!-- Form Container -->
+      <div class="bg-gray-900/80 backdrop-blur-lg border border-gray-700 rounded-2xl p-8 shadow-2xl">
+        <h2 class="text-2xl font-bold text-white text-center mb-8">
+          {{ formMode === 'Login' ? 'Sign In' : 'Create Account' }}
+        </h2>
+
+        <form @submit.prevent="processForm" class="space-y-6">
+          <!-- Email Input -->
+          <div class="space-y-2">
+            <label class="text-gray-300 text-sm font-medium">Email</label>
+            <input
+              type="email"
+              v-model="email"
+              placeholder="Enter your email"
+              required
+              class="w-full p-4 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
+            />
+          </div>
+
+          <!-- Password Input -->
+          <div class="space-y-2">
+            <label class="text-gray-300 text-sm font-medium">Password</label>
+            <input
+              type="password"
+              v-model="password"
+              placeholder="Enter your password"
+              required
+              class="w-full p-4 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
+            />
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            :disabled="isLoading"
+            class="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-700 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 disabled:cursor-not-allowed disabled:transform-none"
+          >
+            <span v-if="isLoading" class="flex items-center justify-center space-x-2">
+              <div class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+              <span>{{ formMode === 'Login' ? 'Signing In...' : 'Creating Account...' }}</span>
+            </span>
+            <span v-else>
+              {{ formMode === 'Login' ? 'Sign In' : 'Create Account' }}
+            </span>
+          </button>
+
+          <!-- Forgot Password -->
+          <button
+            v-if="formMode === 'Login'"
+            type="button"
+            @click="sendPasswordResetEmail"
+            class="w-full text-gray-400 hover:text-white text-sm transition-colors duration-200"
+          >
+            Forgot your password?
+          </button>
+        </form>
+
+        <!-- Toggle Form Mode -->
+        <div class="mt-8 pt-6 border-t border-gray-700 text-center">
+          <p class="text-gray-400 text-sm mb-4">
+            {{ formMode === 'Login' ? "Don't have an account?" : "Already have an account?" }}
+          </p>
+          <button
+            type="button"
+            @click="toggleFormMode"
+            class="text-red-500 hover:text-red-400 font-medium transition-colors duration-200"
+          >
+            {{ formMode === 'Login' ? 'Sign up now' : 'Sign in instead' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Back to Home -->
+      <div class="text-center mt-6">
+        <router-link 
+          to="/" 
+          class="text-gray-400 hover:text-white text-sm transition-colors duration-200 inline-flex items-center space-x-2"
         >
-          {{ formMode }}
-        </button>
-        <button
-          type="button"
-          @click="toggleFormMode"
-          class="w-full px-4 py-2 mt-4 rounded-lg font-medium bg-rose-400 text-white transition-all duration-200 ease-in-out hover:bg-rose-600 focus:outline-none transform hover:scale-105"
-        >
-          Switch to {{ formMode === 'Login' ? 'Signup' : 'Login' }}
-        </button>
-        <button
-          type="button"
-          @click="sendPasswordResetEmail"
-          class="w-full px-4 py-2 mt-4 rounded-lg font-medium bg-rose-400 text-white transition-all duration-200 ease-in-out hover:bg-rose-600 focus:outline-none transform hover:scale-105"
-        >
-          Forgot Password?
-        </button>
-      </form>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          <span>Back to FinnFlix</span>
+        </router-link>
+      </div>
+    </div>
+
+    <!-- Success/Error Toast -->
+    <div 
+      v-if="showToast" 
+      :class="[
+        'fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300',
+        toastType === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+      ]"
+    >
+      {{ toastMessage }}
     </div>
   </div>
 </template>
-
-<style scoped>
-@keyframes fade-in-down {
-  0% {
-    transform: translateY(-10px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-.animate-fade-in-down {
-  animation: fade-in-down 0.5s ease-out 0.5s forwards;
-}
-</style>
 
 <script>
 import { ref } from 'vue';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail as resetPassword } from "firebase/auth";
 import { auth } from '../firebase';
 import { useRouter } from 'vue-router';
-import { user } from '../main'; // Import the user ref from main.js
+import { user } from '../main';
 
 export default {
   name: 'UserLogin',
   setup() {
     const email = ref('');
     const password = ref('');
-    const formMode = ref('Login'); // This ref will keep track of the current form mode - Login or Signup
+    const formMode = ref('Login');
+    const isLoading = ref(false);
+    const showToast = ref(false);
+    const toastMessage = ref('');
+    const toastType = ref('success');
     const router = useRouter();
 
+    const showToastMessage = (message, type = 'success') => {
+      toastMessage.value = message;
+      toastType.value = type;
+      showToast.value = true;
+      setTimeout(() => {
+        showToast.value = false;
+      }, 3000);
+    };
+
     const processForm = async () => {
+      isLoading.value = true;
+      
       try {
         let loggedInUser;
 
         if (formMode.value === 'Login') {
           loggedInUser = await signInWithEmailAndPassword(auth, email.value, password.value);
+          showToastMessage('Welcome back!');
         } else {
           loggedInUser = await createUserWithEmailAndPassword(auth, email.value, password.value);
+          showToastMessage('Account created successfully!');
         }
 
-        user.value = loggedInUser.user; // Set the user ref to the logged-in user's information
-        router.push('/'); // Redirect to the MovieExplorer page after successful login
+        user.value = loggedInUser.user;
+        
+        // Redirect after a short delay to show the success message
+        setTimeout(() => {
+          router.push('/');
+        }, 1000);
       } catch (error) {
-        console.log(error);
-        alert('Failed to login or signup. Please check your credentials');
+        console.error('Auth error:', error);
+        let errorMessage = 'Something went wrong. Please try again.';
+        
+        if (error.code === 'auth/user-not-found') {
+          errorMessage = 'No account found with this email.';
+        } else if (error.code === 'auth/wrong-password') {
+          errorMessage = 'Incorrect password.';
+        } else if (error.code === 'auth/email-already-in-use') {
+          errorMessage = 'An account with this email already exists.';
+        } else if (error.code === 'auth/weak-password') {
+          errorMessage = 'Password should be at least 6 characters.';
+        } else if (error.code === 'auth/invalid-email') {
+          errorMessage = 'Please enter a valid email address.';
+        }
+        
+        showToastMessage(errorMessage, 'error');
+      } finally {
+        isLoading.value = false;
       }
     };
 
     const sendPasswordResetEmail = async () => {
-  if (email.value === '') {
-    alert('Please enter your email');
-  } else {
-    try {
-      await resetPassword(auth, email.value);
-      alert('Password reset email sent. Please check your email');
-    } catch (error) {
-      console.log(error);
-      alert('Failed to send password reset email. Please check your email');
-    }
-  }
-};
+      if (email.value === '') {
+        showToastMessage('Please enter your email address first.', 'error');
+        return;
+      }
+      
+      try {
+        await resetPassword(auth, email.value);
+        showToastMessage('Password reset email sent! Check your inbox.');
+      } catch (error) {
+        console.error('Password reset error:', error);
+        showToastMessage('Failed to send reset email. Please check your email address.', 'error');
+      }
+    };
 
     const toggleFormMode = () => {
       formMode.value = formMode.value === 'Login' ? 'Signup' : 'Login';
+      // Clear any existing toast when switching modes
+      showToast.value = false;
     };
 
-    return { email, password, processForm, formMode, toggleFormMode, sendPasswordResetEmail };
+    return { 
+      email, 
+      password, 
+      processForm, 
+      formMode, 
+      toggleFormMode, 
+      sendPasswordResetEmail,
+      isLoading,
+      showToast,
+      toastMessage,
+      toastType
+    };
   }
 };
 </script>

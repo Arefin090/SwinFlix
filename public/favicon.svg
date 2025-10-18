@@ -1,0 +1,26 @@
+<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color: #ef4444" />
+      <stop offset="100%" style="stop-color: #ec4899" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="24" cy="24" r="24" fill="#000000" />
+  
+  <!-- Outer film reel -->
+  <circle cx="24" cy="24" r="18" stroke="url(#logoGradient)" stroke-width="2" fill="none" />
+  
+  <!-- Inner circle -->
+  <circle cx="24" cy="24" r="7" fill="url(#logoGradient)" />
+  
+  <!-- Film holes -->
+  <circle cx="24" cy="9" r="2" fill="url(#logoGradient)" />
+  <circle cx="24" cy="39" r="2" fill="url(#logoGradient)" />
+  <circle cx="9" cy="24" r="2" fill="url(#logoGradient)" />
+  <circle cx="39" cy="24" r="2" fill="url(#logoGradient)" />
+  
+  <!-- Letter F -->
+  <path d="M20 16 L20 32 M20 16 L28 16 M20 24 L26 24" stroke="white" stroke-width="2" stroke-linecap="round" />
+</svg>

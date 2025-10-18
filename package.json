@@ -1,11 +1,15 @@
 {
-  "name": "movie-explorer",
+  "name": "finnflix",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@heroicons/vue": "^2.0.18",
@@ -14,6 +18,7 @@
     "core-js": "^3.8.3",
     "firebase": "^9.21.0",
     "gsap": "^3.11.5",
+    "pinia": "^3.0.3",
     "postcss": "^8",
     "slick-carousel": "^1.8.1",
     "swiper": "^8.4.7",
@@ -27,36 +32,26 @@
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "@vitejs/plugin-vue": "^6.0.1",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-plugin-typescript": "^5.0.9",
     "@vue/cli-service": "~5.0.0",
+    "@vue/eslint-config-typescript": "^14.6.0",
+    "@vue/test-utils": "^2.4.6",
     "@vue/typescript": "^1.8.20",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-vue": "^8.0.3",
+    "happy-dom": "^20.0.5",
+    "jsdom": "^27.0.0",
     "prettier": "^3.6.2",
     "typescript": "^5.9.3",
+    "vitest": "^3.2.4",
     "vue-cli-plugin-tailwind": "~3.0.0"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended",
-      "prettier"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser",
-      "requireConfigFile": false
-    },
-    "rules": {},
-    "plugins": [
-      "prettier"
-    ]
   },
   "browserslist": [
     "> 1%",

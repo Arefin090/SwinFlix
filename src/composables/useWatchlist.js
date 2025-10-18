@@ -4,7 +4,7 @@ import { useAuth } from './useAuth';
 
 export function useWatchlist() {
   const { userId, isAuthenticated } = useAuth();
-  
+
   const watchlist = ref([]);
   const loading = ref(false);
   const error = ref(null);
@@ -31,7 +31,7 @@ export function useWatchlist() {
     try {
       setLoading(true);
       clearError();
-      
+
       const data = await firebaseService.getWatchlist(userId.value);
       watchlist.value = data;
     } catch (err) {
@@ -49,10 +49,10 @@ export function useWatchlist() {
     try {
       setLoading(true);
       clearError();
-      
+
       const booking = await firebaseService.addToWatchlist(userId.value, movie);
       watchlist.value.unshift(booking);
-      
+
       return booking;
     } catch (err) {
       handleError(err, 'adding to watchlist');
@@ -70,9 +70,9 @@ export function useWatchlist() {
     try {
       setLoading(true);
       clearError();
-      
+
       await firebaseService.removeFromWatchlist(bookingId);
-      watchlist.value = watchlist.value.filter(item => item.id !== bookingId);
+      watchlist.value = watchlist.value.filter((item) => item.id !== bookingId);
     } catch (err) {
       handleError(err, 'removing from watchlist');
       throw err;
@@ -93,7 +93,7 @@ export function useWatchlist() {
   };
 
   const isMovieInWatchlistSync = (movieId) => {
-    return watchlist.value.some(item => item.movieId === movieId);
+    return watchlist.value.some((item) => item.movieId === movieId);
   };
 
   const clearWatchlist = () => {
@@ -117,6 +117,6 @@ export function useWatchlist() {
     isMovieInWatchlist,
     isMovieInWatchlistSync,
     clearWatchlist,
-    clearError
+    clearError,
   };
 }

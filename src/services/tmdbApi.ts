@@ -1,5 +1,11 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { Movie, TMDBResponse, TMDBVideosResponse, ImageSize, BackdropSize } from '../types';
+import {
+  Movie,
+  TMDBResponse,
+  TMDBVideosResponse,
+  ImageSize,
+  BackdropSize,
+} from '../types';
 
 class TMDBService {
   private apiKey: string;
@@ -11,15 +17,14 @@ class TMDBService {
     this.apiKey = process.env.VUE_APP_TMDB_API_KEY || '';
     this.baseURL = 'https://api.themoviedb.org/3';
     this.imageBaseURL = 'https://image.tmdb.org/t/p';
-    
-    
+
     this.client = axios.create({
       baseURL: this.baseURL,
       timeout: 10000,
       params: {
         api_key: this.apiKey,
-        language: 'en-US'
-      }
+        language: 'en-US',
+      },
     });
 
     this.setupInterceptors();
@@ -48,9 +53,10 @@ class TMDBService {
 
   async getPopularMovies(page = 1): Promise<TMDBResponse<Movie>> {
     try {
-      const response: AxiosResponse<TMDBResponse<Movie>> = await this.client.get('/movie/popular', {
-        params: { page }
-      });
+      const response: AxiosResponse<TMDBResponse<Movie>> =
+        await this.client.get('/movie/popular', {
+          params: { page },
+        });
       return response.data;
     } catch (error: any) {
       throw new Error(`Failed to fetch popular movies: ${error.message}`);
@@ -59,9 +65,10 @@ class TMDBService {
 
   async getNowPlayingMovies(page = 1): Promise<TMDBResponse<Movie>> {
     try {
-      const response: AxiosResponse<TMDBResponse<Movie>> = await this.client.get('/movie/now_playing', {
-        params: { page }
-      });
+      const response: AxiosResponse<TMDBResponse<Movie>> =
+        await this.client.get('/movie/now_playing', {
+          params: { page },
+        });
       return response.data;
     } catch (error: any) {
       throw new Error(`Failed to fetch now playing movies: ${error.message}`);
@@ -70,20 +77,25 @@ class TMDBService {
 
   async searchMovies(query: string, page = 1): Promise<TMDBResponse<Movie>> {
     try {
-      const response: AxiosResponse<TMDBResponse<Movie>> = await this.client.get('/search/movie', {
-        params: { query, page }
-      });
+      const response: AxiosResponse<TMDBResponse<Movie>> =
+        await this.client.get('/search/movie', {
+          params: { query, page },
+        });
       return response.data;
     } catch (error: any) {
       throw new Error(`Failed to search movies: ${error.message}`);
     }
   }
 
-  async getMoviesByGenre(genreId: number, page = 1): Promise<TMDBResponse<Movie>> {
+  async getMoviesByGenre(
+    genreId: number,
+    page = 1
+  ): Promise<TMDBResponse<Movie>> {
     try {
-      const response: AxiosResponse<TMDBResponse<Movie>> = await this.client.get('/discover/movie', {
-        params: { with_genres: genreId, page }
-      });
+      const response: AxiosResponse<TMDBResponse<Movie>> =
+        await this.client.get('/discover/movie', {
+          params: { with_genres: genreId, page },
+        });
       return response.data;
     } catch (error: any) {
       throw new Error(`Failed to fetch movies by genre: ${error.message}`);
@@ -92,7 +104,9 @@ class TMDBService {
 
   async getMovieVideos(movieId: number): Promise<TMDBVideosResponse> {
     try {
-      const response: AxiosResponse<TMDBVideosResponse> = await this.client.get(`/movie/${movieId}/videos`);
+      const response: AxiosResponse<TMDBVideosResponse> = await this.client.get(
+        `/movie/${movieId}/videos`
+      );
       return response.data;
     } catch (error: any) {
       throw new Error(`Failed to fetch movie videos: ${error.message}`);
@@ -101,32 +115,37 @@ class TMDBService {
 
   async getMovieDetails(movieId: number): Promise<Movie> {
     try {
-      const response: AxiosResponse<Movie> = await this.client.get(`/movie/${movieId}`);
+      const response: AxiosResponse<Movie> = await this.client.get(
+        `/movie/${movieId}`
+      );
       return response.data;
     } catch (error: any) {
       throw new Error(`Failed to fetch movie details: ${error.message}`);
     }
   }
 
-  getImageUrl(path: string | null, size: ImageSize | BackdropSize = 'w500'): string | null {
+  getImageUrl(
+    path: string | null,
+    size: ImageSize | BackdropSize = 'w500'
+  ): string | null {
     if (!path) return null;
     return `${this.imageBaseURL}/${size}${path}`;
   }
 
   getTrailerKey(videos: TMDBVideosResponse): string | null {
     const trailer = videos.results?.find(
-      video => video.type === 'Trailer' && video.site === 'YouTube'
+      (video) => video.type === 'Trailer' && video.site === 'YouTube'
     );
     return trailer?.key || null;
   }
 
   static readonly genreMap: Record<string, number> = {
-    'Action': 28,
-    'Comedy': 35,
-    'Horror': 27,
-    'Romance': 10749,
+    Action: 28,
+    Comedy: 35,
+    Horror: 27,
+    Romance: 10749,
     'Science Fiction': 878,
-    "Editor's Pick": 16
+    "Editor's Pick": 16,
   };
 }
 

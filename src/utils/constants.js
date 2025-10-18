@@ -1,19 +1,19 @@
 export const MOVIE_GENRES = [
   'Action',
-  'Comedy', 
+  'Comedy',
   'Horror',
   'Romance',
   'Science Fiction',
-  "Editor's Pick"
+  "Editor's Pick",
 ];
 
 export const TMDB_GENRE_MAP = {
-  'Action': 28,
-  'Comedy': 35,
-  'Horror': 27,
-  'Romance': 10749,
+  Action: 28,
+  Comedy: 35,
+  Horror: 27,
+  Romance: 10749,
   'Science Fiction': 878,
-  "Editor's Pick": 16
+  "Editor's Pick": 16,
 };
 
 export const TMDB_IMAGE_SIZES = {
@@ -22,27 +22,27 @@ export const TMDB_IMAGE_SIZES = {
     medium: 'w342',
     large: 'w500',
     xlarge: 'w780',
-    original: 'original'
+    original: 'original',
   },
   backdrop: {
     small: 'w300',
     medium: 'w780',
     large: 'w1280',
-    original: 'original'
-  }
+    original: 'original',
+  },
 };
 
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
-  WATCHLIST: '/booking-history'
+  WATCHLIST: '/booking-history',
 };
 
 export const TOAST_TYPES = {
   SUCCESS: 'success',
   ERROR: 'error',
   WARNING: 'warning',
-  INFO: 'info'
+  INFO: 'info',
 };
 
 export const AUTH_ERROR_MESSAGES = {

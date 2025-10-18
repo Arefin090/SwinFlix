@@ -26,10 +26,10 @@ export function useAuth() {
     try {
       setLoading(true);
       clearError();
-      
+
       const authUser = await firebaseService.signIn(email, password);
       user.value = authUser;
-      
+
       return authUser;
     } catch (err) {
       handleError(err);
@@ -43,10 +43,10 @@ export function useAuth() {
     try {
       setLoading(true);
       clearError();
-      
+
       const authUser = await firebaseService.signUp(email, password);
       user.value = authUser;
-      
+
       return authUser;
     } catch (err) {
       handleError(err);
@@ -60,7 +60,7 @@ export function useAuth() {
     try {
       setLoading(true);
       clearError();
-      
+
       await firebaseService.signOut();
       user.value = null;
       router.push('/');
@@ -83,7 +83,7 @@ export function useAuth() {
     user: computed(() => user.value),
     loading: computed(() => loading.value),
     error: computed(() => error.value),
-    
+
     // Computed
     isAuthenticated: computed(() => !!user.value),
     userEmail: computed(() => user.value?.email || ''),
@@ -94,7 +94,7 @@ export function useAuth() {
     signUp,
     signOut,
     clearError,
-    initializeAuth
+    initializeAuth,
   };
 }
 

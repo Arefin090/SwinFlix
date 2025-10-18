@@ -30,14 +30,18 @@ export function useMovies() {
     try {
       setLoading(true);
       clearError();
-      
+
       const data = await tmdbApi.getPopularMovies(page);
       popularMovies.value = data.results?.slice(0, 12) || [];
-      
+
       if (!featuredMovie.value && data.results?.length > 0) {
-        const moviesWithBackdrop = data.results.filter(movie => movie.backdrop_path);
+        const moviesWithBackdrop = data.results.filter(
+          (movie) => movie.backdrop_path
+        );
         if (moviesWithBackdrop.length > 0) {
-          const randomIndex = Math.floor(Math.random() * Math.min(moviesWithBackdrop.length, 10));
+          const randomIndex = Math.floor(
+            Math.random() * Math.min(moviesWithBackdrop.length, 10)
+          );
           featuredMovie.value = moviesWithBackdrop[randomIndex];
         }
       }
@@ -52,7 +56,7 @@ export function useMovies() {
     try {
       setLoading(true);
       clearError();
-      
+
       const data = await tmdbApi.getNowPlayingMovies(page);
       nowPlayingMovies.value = data.results?.slice(0, 12) || [];
     } catch (err) {
@@ -72,7 +76,7 @@ export function useMovies() {
       setLoading(true);
       clearError();
       searchQuery.value = query;
-      
+
       const data = await tmdbApi.searchMovies(query, page);
       movies.value = data.results?.slice(0, 12) || [];
     } catch (err) {
@@ -87,7 +91,7 @@ export function useMovies() {
       setLoading(true);
       clearError();
       selectedGenre.value = genre;
-      
+
       const genreId = tmdbApi.constructor.genreMap[genre] || 28;
       const data = await tmdbApi.getMoviesByGenre(genreId);
       genreMovies.value = data.results?.slice(0, 12) || [];
@@ -113,10 +117,7 @@ export function useMovies() {
   };
 
   const initializeData = async () => {
-    await Promise.all([
-      fetchPopularMovies(),
-      fetchNowPlayingMovies()
-    ]);
+    await Promise.all([fetchPopularMovies(), fetchNowPlayingMovies()]);
   };
 
   const clearGenreMovies = () => {
@@ -158,6 +159,6 @@ export function useMovies() {
     hasPopularMovies: computed(() => popularMovies.value.length > 0),
     hasNowPlayingMovies: computed(() => nowPlayingMovies.value.length > 0),
     hasGenreMovies: computed(() => genreMovies.value.length > 0),
-    isSearching: computed(() => searchQuery.value.trim().length > 0)
+    isSearching: computed(() => searchQuery.value.trim().length > 0),
   };
 }

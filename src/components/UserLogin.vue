@@ -98,109 +98,67 @@
         </router-link>
       </div>
     </div>
-
-    <!-- Success/Error Toast -->
-    <div 
-      v-if="showToast" 
-      :class="[
-        'fixed top-4 right-4 left-4 sm:left-auto z-50 p-3 md:p-4 rounded-lg shadow-lg transition-all duration-300 text-sm md:text-base',
-        toastType === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
-      ]"
-    >
-      {{ toastMessage }}
-    </div>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail as resetPassword } from "firebase/auth";
-import { auth } from '../firebase';
 import { useRouter } from 'vue-router';
-import { user } from '../main';
+import { useAuthStore } from '../stores/auth';
+import { useToastStore } from '../stores/toast';
+import { sendPasswordResetEmail as resetPassword } from "firebase/auth";
+import { auth } from '../firebase';
 
 export default {
   name: 'UserLogin',
   setup() {
+    const router = useRouter();
+    const authStore = useAuthStore();
+    const toastStore = useToastStore();
+
     const email = ref('');
     const password = ref('');
     const formMode = ref('Login');
-    const isLoading = ref(false);
-    const showToast = ref(false);
-    const toastMessage = ref('');
-    const toastType = ref('success');
-    const router = useRouter();
-
-    const showToastMessage = (message, type = 'success') => {
-      toastMessage.value = message;
-      toastType.value = type;
-      showToast.value = true;
-      setTimeout(() => {
-        showToast.value = false;
-      }, 3000);
-    };
 
     const processForm = async () => {
-      isLoading.value = true;
+      authStore.clearError();
       
       try {
-        let loggedInUser;
-
         if (formMode.value === 'Login') {
-          loggedInUser = await signInWithEmailAndPassword(auth, email.value, password.value);
-          showToastMessage('Welcome back!');
+          await authStore.signIn(email.value, password.value);
+          toastStore.success('Welcome back!');
         } else {
-          loggedInUser = await createUserWithEmailAndPassword(auth, email.value, password.value);
-          showToastMessage('Account created successfully!');
+          await authStore.signUp(email.value, password.value);
+          toastStore.success('Account created successfully!');
         }
-
-        user.value = loggedInUser.user;
         
         // Redirect after a short delay to show the success message
         setTimeout(() => {
           router.push('/');
         }, 1000);
-      } catch (error) {
-        console.error('Auth error:', error);
-        let errorMessage = 'Something went wrong. Please try again.';
-        
-        if (error.code === 'auth/user-not-found') {
-          errorMessage = 'No account found with this email.';
-        } else if (error.code === 'auth/wrong-password') {
-          errorMessage = 'Incorrect password.';
-        } else if (error.code === 'auth/email-already-in-use') {
-          errorMessage = 'An account with this email already exists.';
-        } else if (error.code === 'auth/weak-password') {
-          errorMessage = 'Password should be at least 6 characters.';
-        } else if (error.code === 'auth/invalid-email') {
-          errorMessage = 'Please enter a valid email address.';
-        }
-        
-        showToastMessage(errorMessage, 'error');
-      } finally {
-        isLoading.value = false;
+      } catch (err) {
+        toastStore.error(err.message);
       }
     };
 
     const sendPasswordResetEmail = async () => {
       if (email.value === '') {
-        showToastMessage('Please enter your email address first.', 'error');
+        toastStore.error('Please enter your email address first.');
         return;
       }
       
       try {
         await resetPassword(auth, email.value);
-        showToastMessage('Password reset email sent! Check your inbox.');
+        toastStore.success('Password reset email sent! Check your inbox.');
       } catch (error) {
         console.error('Password reset error:', error);
-        showToastMessage('Failed to send reset email. Please check your email address.', 'error');
+        toastStore.error('Failed to send reset email. Please check your email address.');
       }
     };
 
     const toggleFormMode = () => {
       formMode.value = formMode.value === 'Login' ? 'Signup' : 'Login';
-      // Clear any existing toast when switching modes
-      showToast.value = false;
+      authStore.clearError();
     };
 
     return { 
@@ -210,10 +168,8 @@ export default {
       formMode, 
       toggleFormMode, 
       sendPasswordResetEmail,
-      isLoading,
-      showToast,
-      toastMessage,
-      toastType
+      isLoading: authStore.loading,
+      error: authStore.error
     };
   }
 };

@@ -13,7 +13,7 @@ export const useToastStore = defineStore('toast', {
   },
 
   actions: {
-    addToast(message: string, type: ToastType = 'info', duration: number = 3000): number {
+    addToast(message: string, type: ToastType = 'info', duration = 3000): number {
       const id = this.nextId++;
       const toast: Toast = {
         id,
@@ -47,19 +47,19 @@ export const useToastStore = defineStore('toast', {
     },
 
     // Convenience methods
-    success(message: string, duration: number = 3000): number {
+    success(message: string, duration = 3000): number {
       return this.addToast(message, 'success', duration);
     },
 
-    error(message: string, duration: number = 5000): number {
+    error(message: string, duration = 5000): number {
       return this.addToast(message, 'error', duration);
     },
 
-    warning(message: string, duration: number = 4000): number {
+    warning(message: string, duration = 4000): number {
       return this.addToast(message, 'warning', duration);
     },
 
-    info(message: string, duration: number = 3000): number {
+    info(message: string, duration = 3000): number {
       return this.addToast(message, 'info', duration);
     },
 

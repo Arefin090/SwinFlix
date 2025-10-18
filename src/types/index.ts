@@ -11,7 +11,7 @@ export type {
   WatchlistItem,
   User,
   Toast,
-  TMDBResponse
+  TMDBResponse,
 } from './api';
 
 export type {
@@ -19,5 +19,5 @@ export type {
   FormMode,
   ToastType,
   ImageSize,
-  BackdropSize
+  BackdropSize,
 } from './components';

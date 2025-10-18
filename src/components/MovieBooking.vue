@@ -1,19 +1,21 @@
 <template>
-  <div 
+  <div
     class="bg-gray-900 rounded-lg overflow-hidden transition-all duration-300 hover:scale-105"
     @click="showMovieDetails"
   >
     <!-- Movie Poster -->
     <div class="relative aspect-[2/3] overflow-hidden cursor-pointer">
-      <img 
-        :src="imageUrl" 
+      <img
+        :src="imageUrl"
         :alt="movie.title"
         class="w-full h-full object-cover"
         loading="lazy"
-      >
-      
+      />
+
       <!-- Rating Badge -->
-      <div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 rounded text-xs font-bold">
+      <div
+        class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 rounded text-xs font-bold"
+      >
         ⭐ {{ movie.vote_average?.toFixed(1) || 'N/A' }}
       </div>
     </div>
@@ -26,29 +28,36 @@
       <p class="text-gray-400 text-xs mb-3">
         {{ movie.release_date?.substring(0, 4) || 'TBA' }}
       </p>
-      
+
       <!-- Action Buttons (Always Visible) -->
       <div class="flex space-x-2">
-        <button 
+        <button
           @click.stop="playTrailer"
           class="flex-1 bg-white text-black font-semibold py-2 px-3 rounded-md flex items-center justify-center space-x-1 hover:bg-gray-200 active:bg-gray-300 transition-colors text-xs"
         >
           <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M8 5v14l11-7z"/>
+            <path d="M8 5v14l11-7z" />
           </svg>
           <span>Play</span>
         </button>
-        
-        <button 
+
+        <button
           @click.stop="quickBook"
           :disabled="bookingInProgress"
           :class="[
             'flex-1 font-semibold py-2 px-3 rounded-md transition-colors text-xs disabled:cursor-not-allowed',
-            bookingSuccess ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-gray-700 text-white hover:bg-gray-600 disabled:bg-gray-800'
+            bookingSuccess
+              ? 'bg-green-600 text-white hover:bg-green-700'
+              : 'bg-gray-700 text-white hover:bg-gray-600 disabled:bg-gray-800',
           ]"
         >
-          <span v-if="bookingInProgress" class="flex items-center justify-center space-x-1">
-            <div class="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
+          <span
+            v-if="bookingInProgress"
+            class="flex items-center justify-center space-x-1"
+          >
+            <div
+              class="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"
+            ></div>
             <span>Adding</span>
           </span>
           <span v-else-if="bookingSuccess">✓ Added</span>
@@ -61,8 +70,8 @@
 
 <script>
 import { db } from '@/firebase';
-import firebase from "firebase/compat/app";
-import "firebase/compat/firestore";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
@@ -98,7 +107,7 @@ export default {
       bookingSuccess.value = false;
 
       try {
-        const bookingsRef = db.collection("bookings");
+        const bookingsRef = db.collection('bookings');
         await bookingsRef.add({
           movieId: props.movie.id,
           title: props.movie.title,
@@ -106,30 +115,29 @@ export default {
           tickets: 1,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         });
-        
+
         // Show success state
         bookingSuccess.value = true;
-        
+
         // Reset success state after 2 seconds
         setTimeout(() => {
           bookingSuccess.value = false;
         }, 2000);
-
       } catch (error) {
-        console.error("Error booking tickets:", error);
-        alert("Error adding to list. Please try again.");
+        console.error('Error booking tickets:', error);
+        alert('Error adding to list. Please try again.');
       } finally {
         bookingInProgress.value = false;
       }
     };
 
-    return { 
-      bookingInProgress, 
+    return {
+      bookingInProgress,
       bookingSuccess,
-      showMovieDetails, 
-      playTrailer, 
-      quickBook 
+      showMovieDetails,
+      playTrailer,
+      quickBook,
     };
-  }
+  },
 };
 </script>

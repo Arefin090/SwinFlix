@@ -22,7 +22,7 @@ export const formatCurrency = (amount, currency = 'USD') => {
   if (!amount) return 'N/A';
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency
+    currency,
   }).format(amount);
 };
 

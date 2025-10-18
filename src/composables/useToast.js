@@ -10,7 +10,7 @@ export function useToast() {
       id,
       message,
       type, // 'success', 'error', 'warning', 'info'
-      duration
+      duration,
     };
 
     toasts.value.push(toast);
@@ -25,7 +25,7 @@ export function useToast() {
   };
 
   const removeToast = (id) => {
-    const index = toasts.value.findIndex(toast => toast.id === id);
+    const index = toasts.value.findIndex((toast) => toast.id === id);
     if (index > -1) {
       toasts.value.splice(index, 1);
     }
@@ -59,6 +59,6 @@ export function useToast() {
     success,
     error,
     warning,
-    info
+    info,
   };
 }

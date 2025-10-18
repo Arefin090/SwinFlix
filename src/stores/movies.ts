@@ -10,19 +10,19 @@ export const useMoviesStore = defineStore('movies', {
     genreMovies: [],
     searchResults: [],
     featuredMovie: null,
-    
+
     // UI state
     loading: false,
     error: null,
     searchQuery: '',
     selectedGenre: null,
-    
+
     // Cache timestamps
     lastFetchTimes: {
       popular: null,
       nowPlaying: null,
-      genre: null
-    }
+      genre: null,
+    },
   }),
 
   getters: {
@@ -33,7 +33,7 @@ export const useMoviesStore = defineStore('movies', {
     hasNowPlayingMovies: (state) => state.nowPlayingMovies.length > 0,
     hasGenreMovies: (state) => state.genreMovies.length > 0,
     isSearching: (state) => state.searchQuery.trim().length > 0,
-    
+
     // Get movies based on current state
     currentMovies: (state) => {
       if (state.searchQuery.trim()) {
@@ -43,7 +43,7 @@ export const useMoviesStore = defineStore('movies', {
         return state.genreMovies;
       }
       return state.popularMovies;
-    }
+    },
   },
 
   actions: {
@@ -69,13 +69,16 @@ export const useMoviesStore = defineStore('movies', {
     },
 
     // Cache management
-    isCacheValid(type: keyof MoviesState['lastFetchTimes'], maxAgeMinutes = 10): boolean {
+    isCacheValid(
+      type: keyof MoviesState['lastFetchTimes'],
+      maxAgeMinutes = 10
+    ): boolean {
       const lastFetch = this.lastFetchTimes[type];
       if (!lastFetch) return false;
-      
+
       const now = new Date().getTime();
       const maxAge = maxAgeMinutes * 60 * 1000;
-      return (now - lastFetch) < maxAge;
+      return now - lastFetch < maxAge;
     },
 
     updateCacheTime(type: keyof MoviesState['lastFetchTimes']): void {
@@ -84,27 +87,35 @@ export const useMoviesStore = defineStore('movies', {
 
     // API actions
     async fetchPopularMovies(page = 1, useCache = true): Promise<Movie[]> {
-      if (useCache && this.isCacheValid('popular') && this.popularMovies.length > 0) {
+      if (
+        useCache &&
+        this.isCacheValid('popular') &&
+        this.popularMovies.length > 0
+      ) {
         return this.popularMovies;
       }
 
       try {
         this.setLoading(true);
         this.clearError();
-        
+
         const data = await tmdbApi.getPopularMovies(page);
         this.popularMovies = data.results?.slice(0, 12) || [];
         this.updateCacheTime('popular');
-        
+
         // Set featured movie if not already set
         if (!this.featuredMovie && data.results?.length > 0) {
-          const moviesWithBackdrop = data.results.filter(movie => movie.backdrop_path);
+          const moviesWithBackdrop = data.results.filter(
+            (movie) => movie.backdrop_path
+          );
           if (moviesWithBackdrop.length > 0) {
-            const randomIndex = Math.floor(Math.random() * Math.min(moviesWithBackdrop.length, 10));
+            const randomIndex = Math.floor(
+              Math.random() * Math.min(moviesWithBackdrop.length, 10)
+            );
             this.featuredMovie = moviesWithBackdrop[randomIndex];
           }
         }
-        
+
         return this.popularMovies;
       } catch (error: any) {
         this.setError(error.message);
@@ -115,18 +126,22 @@ export const useMoviesStore = defineStore('movies', {
     },
 
     async fetchNowPlayingMovies(page = 1, useCache = true): Promise<Movie[]> {
-      if (useCache && this.isCacheValid('nowPlaying') && this.nowPlayingMovies.length > 0) {
+      if (
+        useCache &&
+        this.isCacheValid('nowPlaying') &&
+        this.nowPlayingMovies.length > 0
+      ) {
         return this.nowPlayingMovies;
       }
 
       try {
         this.setLoading(true);
         this.clearError();
-        
+
         const data = await tmdbApi.getNowPlayingMovies(page);
         this.nowPlayingMovies = data.results?.slice(0, 12) || [];
         this.updateCacheTime('nowPlaying');
-        
+
         return this.nowPlayingMovies;
       } catch (error: any) {
         this.setError(error.message);
@@ -147,10 +162,10 @@ export const useMoviesStore = defineStore('movies', {
         this.setLoading(true);
         this.clearError();
         this.setSearchQuery(query);
-        
+
         const data = await tmdbApi.searchMovies(query, page);
         this.searchResults = data.results?.slice(0, 12) || [];
-        
+
         return this.searchResults;
       } catch (error: any) {
         this.setError(error.message);
@@ -165,12 +180,12 @@ export const useMoviesStore = defineStore('movies', {
         this.setLoading(true);
         this.clearError();
         this.setSelectedGenre(genre);
-        
+
         const genreId = TMDBService.genreMap[genre] || 28;
         const data = await tmdbApi.getMoviesByGenre(genreId);
         this.genreMovies = data.results?.slice(0, 12) || [];
         this.updateCacheTime('genre');
-        
+
         return this.genreMovies;
       } catch (error: any) {
         this.setError(error.message);
@@ -191,14 +206,17 @@ export const useMoviesStore = defineStore('movies', {
     },
 
     // Utility actions
-    getMovieImageUrl(path: string | null, size: ImageSize | BackdropSize = 'w500'): string | null {
+    getMovieImageUrl(
+      path: string | null,
+      size: ImageSize | BackdropSize = 'w500'
+    ): string | null {
       return tmdbApi.getImageUrl(path, size);
     },
 
     async initializeData(): Promise<void> {
       await Promise.all([
         this.fetchPopularMovies(),
-        this.fetchNowPlayingMovies()
+        this.fetchNowPlayingMovies(),
       ]);
     },
 
@@ -226,8 +244,8 @@ export const useMoviesStore = defineStore('movies', {
       this.lastFetchTimes = {
         popular: null,
         nowPlaying: null,
-        genre: null
+        genre: null,
       };
-    }
-  }
+    },
+  },
 });

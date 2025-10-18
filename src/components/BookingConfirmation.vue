@@ -1,27 +1,43 @@
 <template>
   <div class="min-h-screen bg-black flex items-center justify-center px-4 py-8">
     <!-- Background Gradient -->
-    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800"></div>
-    
+    <div
+      class="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800"
+    ></div>
+
     <!-- Success Card -->
     <div class="relative z-10 max-w-md w-full">
-      <div class="bg-gray-900/90 backdrop-blur-lg border border-gray-700 rounded-2xl p-6 md:p-8 shadow-2xl text-center">
+      <div
+        class="bg-gray-900/90 backdrop-blur-lg border border-gray-700 rounded-2xl p-6 md:p-8 shadow-2xl text-center"
+      >
         <!-- Success Icon -->
         <div class="relative mb-6">
-          <div class="w-16 h-16 md:w-20 md:h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          <div
+            class="w-16 h-16 md:w-20 md:h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <svg
+              class="w-8 h-8 md:w-10 md:h-10 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              ></path>
             </svg>
           </div>
           <!-- Animated ring -->
-          <div class="absolute inset-0 rounded-full border-4 border-green-400 animate-ping opacity-75"></div>
+          <div
+            class="absolute inset-0 rounded-full border-4 border-green-400 animate-ping opacity-75"
+          ></div>
         </div>
 
         <!-- Title -->
-        <h1 class="text-2xl md:text-3xl font-bold text-white mb-4">
-          Success!
-        </h1>
-        
+        <h1 class="text-2xl md:text-3xl font-bold text-white mb-4">Success!</h1>
+
         <!-- Message -->
         <p class="text-gray-300 text-base md:text-lg mb-2">
           Movie added to your list
@@ -32,14 +48,14 @@
 
         <!-- Action Buttons -->
         <div class="space-y-3 md:space-y-4">
-          <router-link 
+          <router-link
             to="/booking-history"
             class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 md:px-6 rounded-lg transition-all duration-200 transform hover:scale-105 block text-sm md:text-base touch-manipulation"
           >
             View My List
           </router-link>
-          
-          <router-link 
+
+          <router-link
             to="/"
             class="w-full bg-gray-700 hover:bg-gray-600 text-white font-medium py-3 px-4 md:px-6 rounded-lg transition-all duration-200 block text-sm md:text-base touch-manipulation"
           >
@@ -57,7 +73,9 @@
 
       <!-- FinnFlix Logo -->
       <div class="text-center mt-4 md:mt-6">
-        <h2 class="text-xl md:text-2xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
+        <h2
+          class="text-xl md:text-2xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent"
+        >
           FinnFlix
         </h2>
       </div>
@@ -93,8 +111,8 @@ export default {
     });
 
     return {
-      countdown
+      countdown,
     };
-  }
+  },
 };
 </script>

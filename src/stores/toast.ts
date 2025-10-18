@@ -4,23 +4,27 @@ import { Toast, ToastState, ToastType } from '../types';
 export const useToastStore = defineStore('toast', {
   state: (): ToastState => ({
     toasts: [],
-    nextId: 1
+    nextId: 1,
   }),
 
   getters: {
     activeToasts: (state) => state.toasts,
-    toastCount: (state) => state.toasts.length
+    toastCount: (state) => state.toasts.length,
   },
 
   actions: {
-    addToast(message: string, type: ToastType = 'info', duration = 3000): number {
+    addToast(
+      message: string,
+      type: ToastType = 'info',
+      duration = 3000
+    ): number {
       const id = this.nextId++;
       const toast: Toast = {
         id,
         message,
         type,
         duration,
-        timestamp: new Date().getTime()
+        timestamp: new Date().getTime(),
       };
 
       this.toasts.push(toast);
@@ -36,7 +40,7 @@ export const useToastStore = defineStore('toast', {
     },
 
     removeToast(id: number): void {
-      const index = this.toasts.findIndex(toast => toast.id === id);
+      const index = this.toasts.findIndex((toast) => toast.id === id);
       if (index > -1) {
         this.toasts.splice(index, 1);
       }
@@ -67,6 +71,6 @@ export const useToastStore = defineStore('toast', {
     $reset() {
       this.toasts = [];
       this.nextId = 1;
-    }
-  }
+    },
+  },
 });

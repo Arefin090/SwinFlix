@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <router-view/>
-    <FooterPage/>
-    <ToastNotification/>
+    <router-view />
+    <FooterPage />
+    <ToastNotification />
   </div>
 </template>
 
@@ -11,21 +11,20 @@ import FooterPage from './components/FooterPage.vue';
 import ToastNotification from './components/ToastNotification.vue';
 
 export default {
-  components: 
-  {
+  components: {
     FooterPage,
-    ToastNotification
+    ToastNotification,
   },
 };
 </script>
 
 <style>
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 body {
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   background: #000;
   overflow-x: hidden;
 }
@@ -58,13 +57,24 @@ html {
 
 .movie-card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(239, 68, 68, 0.2);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(239, 68, 68, 0.2);
 }
 
 /* Glowing text animation */
 @keyframes glow {
-  0%, 100% { text-shadow: 0 0 5px rgba(239, 68, 68, 0.5), 0 0 10px rgba(239, 68, 68, 0.3); }
-  50% { text-shadow: 0 0 20px rgba(239, 68, 68, 0.8), 0 0 30px rgba(239, 68, 68, 0.5); }
+  0%,
+  100% {
+    text-shadow:
+      0 0 5px rgba(239, 68, 68, 0.5),
+      0 0 10px rgba(239, 68, 68, 0.3);
+  }
+  50% {
+    text-shadow:
+      0 0 20px rgba(239, 68, 68, 0.8),
+      0 0 30px rgba(239, 68, 68, 0.5);
+  }
 }
 
 /* Custom scrollbar */
@@ -105,7 +115,11 @@ html {
 .particle {
   position: absolute;
   border-radius: 50%;
-  background: linear-gradient(45deg, rgba(239, 68, 68, 0.3), rgba(236, 72, 153, 0.3));
+  background: linear-gradient(
+    45deg,
+    rgba(239, 68, 68, 0.3),
+    rgba(236, 72, 153, 0.3)
+  );
   animation: float 20s infinite linear;
 }
 
@@ -134,7 +148,8 @@ html {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
     opacity: 0.7;
   }

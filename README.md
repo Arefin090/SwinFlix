@@ -9,7 +9,7 @@ A (not so modern😔) modern, Netflix-inspired movie discovery platform built wi
 This project began as an assignment during my early days in Uni and has since evolved into a showcase of modern web development practices. What started as a basic CRUD application has been continuously refined with:
 
 - **Modern Architecture**: Migrated from basic Vue patterns to Vue 3 Composition API
-- **Responsive Design**: Complete mobile-first redesign with Tailwind CSS  
+- **Responsive Design**: Complete mobile-first redesign with Tailwind CSS
 - **Professional Practices**: Added proper state management, error handling, and code organization
 - **Engineering Excellence**: Implementing testing, TypeScript, and performance optimizations
 
@@ -28,26 +28,32 @@ This project represents both my learning journey and current capabilities as an 
 ## 🚀 Tech Stack
 
 ### Frontend
-- **Vue.js 3** - Progressive JavaScript framework
+
+- **Vue.js 3** - Progressive JavaScript framework with Composition API
+- **Pinia** - Modern state management for Vue.js
 - **Vue Router 4** - Client-side routing
 - **Tailwind CSS** - Utility-first CSS framework
 - **TypeScript** - Type-safe JavaScript
-- **Swiper.js** - Touch slider components
 
 ### Backend & Services
+
 - **Firebase Auth** - User authentication
 - **Firebase Firestore** - NoSQL database
 - **TMDB API** - Movie data and metadata
 
-### Development & Deployment
-- **Vite** - Build tool and development server
-- **ESLint** - Code linting
+### Development & Testing
+
+- **Vitest** - Unit testing framework
+- **Vue Test Utils** - Vue component testing utilities
+- **ESLint** - Code linting with TypeScript support
 - **Prettier** - Code formatting
+- **Husky** - Git hooks for code quality
 - **Vercel** - Deployment and hosting
 
 ## 🛠️ Getting Started
 
 ### Prerequisites
+
 - Node.js 16+ and npm
 - Firebase project with Auth and Firestore enabled
 - TMDB API key
@@ -55,19 +61,22 @@ This project represents both my learning journey and current capabilities as an 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Arefin090/FinnFlix.git
    cd FinnFlix
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Environment Setup**
-   
+
    Create a `.env.local` file in the root directory:
+
    ```env
    VUE_APP_TMDB_API_KEY=your_tmdb_api_key
    VUE_APP_FIREBASE_API_KEY=your_firebase_api_key
@@ -77,12 +86,13 @@ This project represents both my learning journey and current capabilities as an 
    ```
 
 4. **Start development server**
+
    ```bash
    npm run serve
    ```
 
 5. **Open your browser**
-   
+
    Navigate to `http://localhost:8080`
 
 ## 📁 Project Structure
@@ -94,25 +104,38 @@ src/
 │   ├── MovieExplorer.vue   # Main browse interface
 │   ├── UserLogin.vue       # Authentication
 │   └── ...
-├── services/           # API services (planned)
-├── composables/        # Vue composables (planned)
-├── types/             # TypeScript definitions (planned)
-├── utils/             # Utility functions (planned)
-├── firebase.js        # Firebase configuration
-├── router.js          # Vue Router configuration
-└── main.js           # Application entry point
+├── stores/             # Pinia stores
+│   ├── auth.ts            # Authentication state
+│   ├── movies.ts          # Movies data management
+│   └── watchlist.ts       # User watchlist
+├── services/           # API services
+│   ├── firebaseService.ts # Firebase operations
+│   └── tmdbApi.ts         # TMDB API client
+├── composables/        # Vue composables
+├── types/             # TypeScript definitions
+│   ├── index.ts           # Core types
+│   ├── api.ts             # API response types
+│   └── components.ts      # Component prop types
+├── tests/             # Unit tests
+├── utils/             # Utility functions
+├── firebase.ts        # Firebase configuration
+├── router.ts          # Vue Router configuration
+└── main.ts           # Application entry point
 ```
 
 ## 🎯 Roadmap
 
-### Architecture Improvements (In Progress)
-- [ ] **State Management**: Migrate to Pinia for better state handling
-- [ ] **TypeScript Integration**: Full TypeScript conversion
-- [ ] **Service Layer**: Proper API abstraction and error handling
-- [ ] **Testing**: Unit and integration test setup
-- [ ] **Performance**: Caching and optimization strategies
+### Architecture Improvements (Completed ✅)
+
+- [x] **State Management**: Migrated to Pinia for reactive state handling
+- [x] **TypeScript Integration**: Full TypeScript conversion with strict typing
+- [x] **Service Layer**: Proper API abstraction and error handling
+- [x] **Testing**: Comprehensive unit test suite with Vitest
+- [x] **Development Workflow**: ESLint, Prettier, Husky pre-commit hooks
+- [x] **Performance**: Caching strategies and optimization
 
 ### Feature Enhancements (Planned)
+
 - [ ] **Advanced Search**: AI-powered search with filters
 - [ ] **Social Features**: User reviews and ratings
 - [ ] **Recommendations**: Personalized movie suggestions
@@ -122,14 +145,21 @@ src/
 ## 🧪 Development
 
 ### Available Scripts
+
 ```bash
-npm run serve      # Start development server
-npm run build      # Build for production
-npm run lint       # Run ESLint
-npm run test       # Run tests (coming soon)
+npm run serve         # Start development server
+npm run build         # Build for production
+npm run lint          # Run ESLint
+npm run lint:fix      # Run ESLint with auto-fix
+npm run format        # Format code with Prettier
+npm run format:check  # Check code formatting
+npm run type-check    # Run TypeScript type checking
+npm run test          # Run unit tests
+npm run test:coverage # Run tests with coverage report
 ```
 
 ### Code Style
+
 This project uses ESLint and Prettier for code formatting. The configuration follows Vue.js 3 best practices with TypeScript support.
 
 ## 🚀 Deployment

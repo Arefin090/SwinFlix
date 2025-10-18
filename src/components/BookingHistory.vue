@@ -142,60 +142,36 @@
         </div>
       </div>
     </div>
-
-    <!-- Success Toast -->
-    <div 
-      v-if="showToast" 
-      class="fixed top-4 right-4 left-4 sm:left-auto z-50 bg-green-600 text-white p-3 md:p-4 rounded-lg shadow-lg transition-all duration-300 text-sm md:text-base"
-    >
-      {{ toastMessage }}
-    </div>
   </div>
 </template>
 
 <script>
-import { db } from '../firebase';
 import { ref, onMounted, computed } from 'vue';
-import { user } from '../main';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
+import { useWatchlistStore } from '../stores/watchlist';
+import { useToastStore } from '../stores/toast';
+import { formatDate } from '../utils/formatters';
 
 export default {
   setup() {
-    const loading = ref(true);
-    const bookings = ref([]);
+    const router = useRouter();
+    const authStore = useAuthStore();
+    const watchlistStore = useWatchlistStore();
+    const toastStore = useToastStore();
+
     const currentPage = ref(1);
     const itemsPerPage = ref(8);
-    const showToast = ref(false);
-    const toastMessage = ref('');
-    const router = useRouter();
 
     const paginatedBookings = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
       const end = start + itemsPerPage.value;
-      return bookings.value.slice(start, end);
+      return watchlistStore.watchlist.slice(start, end);
     });
 
     const totalPages = computed(() => {
-      return Math.ceil(bookings.value.length / itemsPerPage.value);
+      return Math.ceil(watchlistStore.watchlistCount / itemsPerPage.value);
     });
-
-    const formatDate = (timestamp) => {
-      if (typeof timestamp === 'string') {
-        return timestamp;
-      }
-      if (timestamp?.toDate) {
-        return timestamp.toDate().toLocaleDateString();
-      }
-      return 'Unknown date';
-    };
-
-    const showToastMessage = (message) => {
-      toastMessage.value = message;
-      showToast.value = true;
-      setTimeout(() => {
-        showToast.value = false;
-      }, 3000);
-    };
 
     const nextPage = () => {
       if (currentPage.value < totalPages.value) {
@@ -210,67 +186,48 @@ export default {
     };
 
     const watchMovie = (booking) => {
-      // Navigate back to home and show movie details
       router.push('/');
-      showToastMessage(`Playing ${booking.title}...`);
+      toastStore.success(`Playing ${booking.title}...`);
     };
 
     const removeFromList = async (booking) => {
       try {
-        await db.collection('bookings').doc(booking.id).delete();
-        bookings.value = bookings.value.filter(b => b.id !== booking.id);
-        showToastMessage(`${booking.title} removed from your list`);
+        await watchlistStore.removeFromWatchlist(booking.id);
+        toastStore.success(`${booking.title} removed from your list`);
         
         // Adjust current page if necessary
         if (paginatedBookings.value.length === 0 && currentPage.value > 1) {
           currentPage.value--;
         }
       } catch (error) {
-        console.error('Error removing booking:', error);
-        showToastMessage('Failed to remove movie. Please try again.');
+        toastStore.error('Failed to remove movie. Please try again.');
       }
     };
 
     onMounted(async () => {
-      if (!user.value) {
+      if (!authStore.isAuthenticated) {
         router.push('/login');
         return;
       }
 
-      try {
-        const bookingQuery = await db.collection('bookings').where('userId', '==', user.value.uid).get();
-        bookingQuery.forEach(doc => {
-          let booking = doc.data();
-          booking.id = doc.id;
-          bookings.value.push(booking);
-        });
-        
-        // Sort in JavaScript instead of Firestore to avoid index requirement
-        bookings.value.sort((a, b) => {
-          if (!a.timestamp || !b.timestamp) return 0;
-          return b.timestamp.seconds - a.timestamp.seconds;
-        });
-      } catch (error) {
-        console.error('Error fetching bookings:', error);
-      } finally {
-        loading.value = false;
-      }
+      await watchlistStore.fetchWatchlist();
     });
 
     return { 
-      bookings, 
-      loading, 
+      // Data
+      bookings: watchlistStore.watchlist,
+      loading: watchlistStore.loading, 
       currentPage, 
       itemsPerPage, 
       paginatedBookings, 
       totalPages,
+      
+      // Methods
       nextPage, 
       previousPage,
       formatDate,
       watchMovie,
-      removeFromList,
-      showToast,
-      toastMessage
+      removeFromList
     };
   }
 }

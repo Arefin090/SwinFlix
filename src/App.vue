@@ -2,19 +2,19 @@
   <div id="app">
     <router-view/>
     <FooterPage/>
+    <ToastNotification/>
   </div>
 </template>
 
 <script>
 import FooterPage from './components/FooterPage.vue';
-
-// import MovieExplorer from "./components/MovieExplorer.vue";
- //import UserLogin from "./components/UserLogin.vue";
+import ToastNotification from './components/ToastNotification.vue';
 
 export default {
   components: 
   {
-    FooterPage
+    FooterPage,
+    ToastNotification
   },
 };
 </script>

@@ -65,7 +65,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { user } from '../main';
+import { useAuthStore } from '../stores/auth';
 
 export default {
   props: {
@@ -77,7 +77,8 @@ export default {
     const bookingInProgress = ref(false);
     const bookingSuccess = ref(false);
     const router = useRouter();
-    const loggedInUser = computed(() => user.value);
+    const authStore = useAuthStore();
+    const loggedInUser = computed(() => authStore.user);
 
     const showMovieDetails = () => {
       emit('show-details', props.movie);

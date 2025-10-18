@@ -5,7 +5,7 @@
       <!-- Movie Backdrop -->
       <div 
         class="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        :style="`background-image: url('https://image.tmdb.org/t/p/original${featuredMovie.backdrop_path}')`"
+        :style="`background-image: url('${getMovieImageUrl(featuredMovie.backdrop_path, 'original')}')`"
       ></div>
       
       <!-- Gradient Overlays -->
@@ -93,7 +93,7 @@
         <div class="max-w-2xl mx-auto relative">
           <input
             v-model="search"
-            @input="searchMovies"
+            @input="handleSearch"
             type="text"
             placeholder="Search for movies..."
             class="w-full p-3 md:p-4 pl-10 md:pl-12 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all text-sm md:text-base"
@@ -123,7 +123,7 @@
             <button
               v-for="genre in genres"
               :key="genre"
-              @click="fetchMoviesByGenre(genre)"
+              @click="handleGenreSelect(genre)"
               class="bg-gray-800 hover:bg-red-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg transition-all duration-300 transform hover:scale-105 font-medium text-sm md:text-base"
             >
               {{ genre }}
@@ -139,7 +139,7 @@
               v-for="movie in genreMovies"
               :key="movie.id"
               :movie="movie"
-              :imageUrl="`https://image.tmdb.org/t/p/w500${movie.poster_path}`"
+              :imageUrl="getMovieImageUrl(movie.poster_path)"
               @show-details="showMovieDetails"
               @play-trailer="playTrailer"
             />
@@ -151,10 +151,10 @@
           <h2 class="text-2xl md:text-3xl font-bold text-white mb-6 md:mb-8">Now Playing</h2>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-6">
             <MovieBooking
-              v-for="movie in latestMovies"
+              v-for="movie in nowPlayingMovies"
               :key="movie.id"
               :movie="movie"
-              :imageUrl="`https://image.tmdb.org/t/p/w500${movie.poster_path}`"
+              :imageUrl="getMovieImageUrl(movie.poster_path)"
               @show-details="showMovieDetails"
               @play-trailer="playTrailer"
             />
@@ -169,7 +169,7 @@
               v-for="movie in popularMovies"
               :key="movie.id"
               :movie="movie"
-              :imageUrl="`https://image.tmdb.org/t/p/w500${movie.poster_path}`"
+              :imageUrl="getMovieImageUrl(movie.poster_path)"
               @show-details="showMovieDetails"
               @play-trailer="playTrailer"
             />
@@ -218,7 +218,7 @@
                 <p class="text-gray-300 leading-relaxed text-sm sm:text-base md:text-lg">{{ selectedMovie.overview }}</p>
               </div>
               <img 
-                :src="`https://image.tmdb.org/t/p/w300${selectedMovie.poster_path}`" 
+                :src="getMovieImageUrl(selectedMovie.poster_path, 'w300')" 
                 :alt="selectedMovie.title"
                 class="w-24 h-36 sm:w-32 sm:h-48 md:w-40 md:h-60 object-cover rounded-xl shadow-lg flex-shrink-0 order-1 sm:order-2 mx-auto sm:mx-0"
               >
@@ -245,191 +245,109 @@
 </template>
 
 <script>
-import axios from "axios";
 import MovieBooking from "./MovieBooking.vue";
-import { auth, signOut } from '../firebase';
-import { user } from '../main';
+import { useAuthStore } from '../stores/auth';
+import { useMoviesStore } from '../stores/movies';
+import { useToastStore } from '../stores/toast';
+import { MOVIE_GENRES } from '../utils/constants';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default {
   components: {
     MovieBooking,
   },
-  data() {
-    return {
-      search: "",
-      latestMovies: [],
-      popularMovies: [],
-      genreMovies: [],
-      selectedGenre: null,
-      loading: false,
-      showMenu: false,
-      genres: ['Action', 'Comedy', 'Horror', 'Romance', 'Science Fiction', "Editor's Pick"],
-      featuredMovie: null,
-      showModal: false,
-      selectedMovie: null,
-      selectedMovieTrailer: null
-    };
-  },
   setup() {
     const router = useRouter();
+    const authStore = useAuthStore();
+    const moviesStore = useMoviesStore();
+    const toastStore = useToastStore();
+
+    // Local component state
+    const search = ref("");
+    const showMenu = ref(false);
+    const showModal = ref(false);
+    const selectedMovie = ref(null);
+    const selectedMovieTrailer = ref(null);
 
     const logout = async () => {
       try {
-        await signOut(auth);
-        user.value = null;
+        await authStore.signOut();
         router.push('/');
-      } catch (error) {
-        console.error('Error signing out:', error);
+      } catch (err) {
+        toastStore.error('Failed to sign out. Please try again.');
       }
     };
 
-    return { logout };
-  },
-  computed: {
-    user() {
-      return user.value;
-    }
-  },
-  mounted() {
-    this.fetchLatestMovies();
-    this.fetchPopularMovies();
-    this.fetchFeaturedMovie();
-  },
-  methods: {
-    async searchMovies() {
-      this.loading = true;
-      if (this.search.trim() === "") {
-        this.latestMovies = [];
-        this.popularMovies = [];
-        this.genreMovies = [];
-        await this.fetchLatestMovies();
-        await this.fetchPopularMovies();
-      } else {
-        await this.fetchMovies();
+    const handleSearch = async () => {
+      if (search.value.trim() === "") {
+        moviesStore.clearSearchResults();
+        moviesStore.clearGenreMovies();
+        return;
       }
-      this.loading = false;
-    },
+      await moviesStore.searchMovies(search.value);
+    };
 
-    async fetchMovies() {
-      try {
-        const response = await axios.get(
-          `https://api.themoviedb.org/3/search/movie?api_key=${process.env.VUE_APP_TMDB_API_KEY}&query=${this.search}`
-        );
-        this.latestMovies = response.data.results.slice(0, 12);
-        this.popularMovies = [];
-        this.genreMovies = [];
-      } catch (error) {
-        console.error("Error fetching movies:", error);
-      }
-    },
+    const handleGenreSelect = async (genre) => {
+      search.value = "";
+      moviesStore.clearSearchResults();
+      await moviesStore.fetchMoviesByGenre(genre);
+    };
 
-    async fetchLatestMovies() {
-      try {
-        const response = await axios.get(
-          `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.VUE_APP_TMDB_API_KEY}&language=en-US&page=1`
-        );
-        this.latestMovies = response.data.results.slice(0, 12);
-      } catch (error) {
-        console.error("Error fetching latest movies:", error);
-      }
-    },
+    onMounted(async () => {
+      await moviesStore.initializeData();
+    });
 
-    async fetchPopularMovies() {
-      try {
-        const response = await axios.get(
-          `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.VUE_APP_TMDB_API_KEY}&language=en-US&page=1`
-        );
-        this.popularMovies = response.data.results.slice(0, 12);
-      } catch (error) {
-        console.error("Error fetching popular movies:", error);
-      }
-    },
-
-    async fetchMoviesByGenre(genre) {
-      this.selectedGenre = genre;
+    return {
+      // Auth
+      user: authStore.user,
+      logout,
       
-      const genreMap = {
-        'Action': 28,
-        'Comedy': 35,
-        'Horror': 27,
-        'Romance': 10749,
-        'Science Fiction': 878,
-        "Editor's Pick": 16
-      };
-
-      const genreId = genreMap[genre] || 28;
-
-      try {
-        const response = await axios.get(
-          `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.VUE_APP_TMDB_API_KEY}&with_genres=${genreId}`
-        );
-        this.genreMovies = response.data.results.slice(0, 12);
-      } catch (error) {
-        console.error("Error fetching movies by genre:", error);
+      // Movies - use computed to ensure reactivity
+      popularMovies: computed(() => moviesStore.popularMovies),
+      nowPlayingMovies: computed(() => moviesStore.nowPlayingMovies),
+      genreMovies: computed(() => moviesStore.genreMovies),
+      featuredMovie: computed(() => moviesStore.featuredMovie),
+      selectedGenre: computed(() => moviesStore.selectedGenre),
+      loading: computed(() => moviesStore.loading),
+      error: computed(() => moviesStore.error),
+      
+      // Local state
+      search,
+      showMenu,
+      showModal,
+      selectedMovie,
+      selectedMovieTrailer,
+      
+      // Constants
+      genres: MOVIE_GENRES,
+      
+      // Methods
+      handleSearch,
+      handleGenreSelect,
+      fetchMovieTrailer: moviesStore.fetchMovieTrailer,
+      getMovieImageUrl: moviesStore.getMovieImageUrl,
+      
+      // Modal methods
+      playTrailer: async (movie) => {
+        const trailerKey = await moviesStore.fetchMovieTrailer(movie.id);
+        selectedMovie.value = movie;
+        selectedMovieTrailer.value = trailerKey;
+        showModal.value = true;
+      },
+      
+      showMovieDetails: (movie) => {
+        selectedMovie.value = movie;
+        selectedMovieTrailer.value = null;
+        showModal.value = true;
+      },
+      
+      closeModal: () => {
+        showModal.value = false;
+        selectedMovie.value = null;
+        selectedMovieTrailer.value = null;
       }
-    },
-    
-    async fetchFeaturedMovie() {
-      try {
-        const response = await axios.get(
-          `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.VUE_APP_TMDB_API_KEY}&language=en-US&page=1`
-        );
-        const movies = response.data.results.filter(movie => movie.backdrop_path);
-        const randomIndex = Math.floor(Math.random() * Math.min(movies.length, 10));
-        this.featuredMovie = movies[randomIndex];
-      } catch (error) {
-        console.error("Error fetching featured movie:", error);
-      }
-    },
-    
-    scrollToMovies() {
-      const firstSection = document.querySelector('section');
-      if (firstSection) {
-        firstSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    },
-    
-    async fetchMovieTrailer(movieId) {
-      try {
-        const response = await axios.get(
-          `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${process.env.VUE_APP_TMDB_API_KEY}&language=en-US`
-        );
-        const trailer = response.data.results.find(
-          video => video.type === 'Trailer' && video.site === 'YouTube'
-        );
-        return trailer ? trailer.key : null;
-      } catch (error) {
-        console.error("Error fetching movie trailer:", error);
-        return null;
-      }
-    },
-
-    async playTrailer(movie) {
-      const trailerKey = await this.fetchMovieTrailer(movie.id);
-      this.selectedMovie = movie;
-      this.selectedMovieTrailer = trailerKey;
-      this.showModal = true;
-    },
-
-    showMovieDetails(movie) {
-      this.selectedMovie = movie;
-      this.selectedMovieTrailer = null;
-      this.showModal = true;
-    },
-
-    closeModal() {
-      this.showModal = false;
-      this.selectedMovie = null;
-      this.selectedMovieTrailer = null;
-    },
-
-    openRandomMovie() {
-      if (this.popularMovies && this.popularMovies.length > 0) {
-        const randomMovie = this.popularMovies[Math.floor(Math.random() * this.popularMovies.length)];
-        this.playTrailer(randomMovie);
-      }
-    }
-  },
+    };
+  }
 };
 </script>

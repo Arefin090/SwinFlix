@@ -69,7 +69,7 @@ export const useMoviesStore = defineStore('movies', {
     },
 
     // Cache management
-    isCacheValid(type: keyof MoviesState['lastFetchTimes'], maxAgeMinutes: number = 10): boolean {
+    isCacheValid(type: keyof MoviesState['lastFetchTimes'], maxAgeMinutes = 10): boolean {
       const lastFetch = this.lastFetchTimes[type];
       if (!lastFetch) return false;
       
@@ -83,7 +83,7 @@ export const useMoviesStore = defineStore('movies', {
     },
 
     // API actions
-    async fetchPopularMovies(page: number = 1, useCache: boolean = true): Promise<Movie[]> {
+    async fetchPopularMovies(page = 1, useCache = true): Promise<Movie[]> {
       if (useCache && this.isCacheValid('popular') && this.popularMovies.length > 0) {
         return this.popularMovies;
       }
@@ -114,7 +114,7 @@ export const useMoviesStore = defineStore('movies', {
       }
     },
 
-    async fetchNowPlayingMovies(page: number = 1, useCache: boolean = true): Promise<Movie[]> {
+    async fetchNowPlayingMovies(page = 1, useCache = true): Promise<Movie[]> {
       if (useCache && this.isCacheValid('nowPlaying') && this.nowPlayingMovies.length > 0) {
         return this.nowPlayingMovies;
       }
@@ -136,7 +136,7 @@ export const useMoviesStore = defineStore('movies', {
       }
     },
 
-    async searchMovies(query: string, page: number = 1): Promise<Movie[]> {
+    async searchMovies(query: string, page = 1): Promise<Movie[]> {
       if (!query.trim()) {
         this.searchResults = [];
         this.setSearchQuery('');

@@ -46,7 +46,7 @@ class TMDBService {
     );
   }
 
-  async getPopularMovies(page: number = 1): Promise<TMDBResponse<Movie>> {
+  async getPopularMovies(page = 1): Promise<TMDBResponse<Movie>> {
     try {
       const response: AxiosResponse<TMDBResponse<Movie>> = await this.client.get('/movie/popular', {
         params: { page }
@@ -57,7 +57,7 @@ class TMDBService {
     }
   }
 
-  async getNowPlayingMovies(page: number = 1): Promise<TMDBResponse<Movie>> {
+  async getNowPlayingMovies(page = 1): Promise<TMDBResponse<Movie>> {
     try {
       const response: AxiosResponse<TMDBResponse<Movie>> = await this.client.get('/movie/now_playing', {
         params: { page }
@@ -68,7 +68,7 @@ class TMDBService {
     }
   }
 
-  async searchMovies(query: string, page: number = 1): Promise<TMDBResponse<Movie>> {
+  async searchMovies(query: string, page = 1): Promise<TMDBResponse<Movie>> {
     try {
       const response: AxiosResponse<TMDBResponse<Movie>> = await this.client.get('/search/movie', {
         params: { query, page }
@@ -79,7 +79,7 @@ class TMDBService {
     }
   }
 
-  async getMoviesByGenre(genreId: number, page: number = 1): Promise<TMDBResponse<Movie>> {
+  async getMoviesByGenre(genreId: number, page = 1): Promise<TMDBResponse<Movie>> {
     try {
       const response: AxiosResponse<TMDBResponse<Movie>> = await this.client.get('/discover/movie', {
         params: { with_genres: genreId, page }

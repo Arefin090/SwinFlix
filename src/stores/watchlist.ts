@@ -58,7 +58,7 @@ export const useWatchlistStore = defineStore('watchlist', {
     },
 
     // Cache management
-    isCacheValid(maxAgeMinutes: number = 5): boolean {
+    isCacheValid(maxAgeMinutes = 5): boolean {
       if (!this.lastFetchTime) return false;
       
       const now = new Date().getTime();
@@ -67,7 +67,7 @@ export const useWatchlistStore = defineStore('watchlist', {
     },
 
     // API actions
-    async fetchWatchlist(useCache: boolean = true): Promise<WatchlistItem[]> {
+    async fetchWatchlist(useCache = true): Promise<WatchlistItem[]> {
       const authStore = useAuthStore();
       
       if (!authStore.isAuthenticated) {

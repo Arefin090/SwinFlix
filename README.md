@@ -13,7 +13,7 @@ This project began as an assignment during my early days in Uni and has since ev
 - **Professional Practices**: Added proper state management, error handling, and code organization
 - **Engineering Excellence**: Implementing testing, TypeScript, and performance optimizations
 
-This project represents both my learning journey and current capabilities as an Engineer
+> This project represents both my learning journey and current capabilities as an Engineer
 
 ## ✨ Features
 
